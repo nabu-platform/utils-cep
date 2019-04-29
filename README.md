@@ -1,0 +1,1 @@
+A library for complex event processing
