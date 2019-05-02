@@ -1,6 +1,8 @@
 package be.nabu.utils.cep.impl;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 
 import be.nabu.utils.cep.api.CEPField;
@@ -10,13 +12,14 @@ import be.nabu.utils.cep.api.ComplexEvent;
 import be.nabu.utils.cep.api.EventSeverity;
 
 public class ComplexEventImpl implements ComplexEvent {
-	private String artifactId, localId, eventName, realm, alias, message, serverGroup, serverName, serverHost;
+	private String artifactId, localId, eventName, realm, alias, message, serverGroup, serverName, serverHost, action, eventCategory, externalId, reason, correlationId, deviceId;
 	private Date created, started, stopped;
 	private Long duration;
 	private Integer eventCount;
 	private EventSeverity severity;
 	private String code, stacktrace, context;
 	private TimeZone timezone;
+	private Map<String, Object> extensions = new HashMap<String, Object>();
 
 	@CEPField(key = "artifact")
 	@Override
@@ -189,5 +192,69 @@ public class ComplexEventImpl implements ComplexEvent {
 	public void setTimezone(TimeZone timezone) {
 		this.timezone = timezone;
 	}
+
+	@Override
+	@CEPField(key = "act")
+	public String getAction() {
+		return action;
+	}
+	public void setAction(String action) {
+		this.action = action;
+	}
 	
+	@Override
+	@CEPField(key = "cat")
+	public String getEventCategory() {
+		return eventCategory;
+	}
+	public void setEventCategory(String eventCategory) {
+		this.eventCategory = eventCategory;
+	}
+	
+	@Override
+	@CEPField(key = "externalId")
+	public String getExternalId() {
+		return externalId;
+	}
+	public void setExternalId(String externalId) {
+		this.externalId = externalId;
+	}
+	
+	@Override
+	@CEPField(key = "reason")
+	@CEPIdentifiable
+	public String getReason() {
+		return reason;
+	}
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+	
+	@Override
+	@CEPField(key = "correlationId")
+	public String getCorrelationId() {
+		return correlationId;
+	}
+	public void setCorrelationId(String correlationId) {
+		this.correlationId = correlationId;
+	}
+	
+	@Override
+	@CEPField(key = "sdevice")
+	public String getDeviceId() {
+		return deviceId;
+	}
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
+	}
+	
+	@Override
+	@CEPIgnore
+	public Map<String, Object> getExtensions() {
+		return extensions;
+	}
+	public void setExtensions(Map<String, Object> extensions) {
+		this.extensions = extensions;
+	}
+
 }

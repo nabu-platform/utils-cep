@@ -47,8 +47,13 @@ public class CEPUtils {
 	
 	public static NetworkedComplexEventImpl newServerNetworkEvent(Class<?> context, String name, SocketAddress address, String message, Exception e) {
 		NetworkedComplexEventImpl event = new NetworkedComplexEventImpl();
+		enrich(event, context, name, address, message, e);
+		return event;
+	}
+
+	public static void enrich(NetworkedComplexEventImpl event, Class<?> context, String name, SocketAddress address, String message, Exception e) {
 		// it's an assumption that holds true in most cases
-		event.setTransportProtocol("tcp");
+		event.setTransportProtocol("TCP");
 		event.setCreated(new Date());
 		event.setMessage(message);
 		event.setEventName(name);
@@ -83,7 +88,6 @@ public class CEPUtils {
 			event.setSourceIp(socketAddress.getAddress().getHostAddress());
 			event.setSourcePort(socketAddress.getPort());
 		}
-		return event;
 	}
 	
 	public static ComplexEventImpl enrich(ComplexEventImpl event, Exception e) {
@@ -180,8 +184,8 @@ public class CEPUtils {
 				
 				// TODO: use the factory, however it defaults to the JavaBeanAccessor which (currently) does not support listing & annotations
 				ContextAccessor accessor = new JavaContextAccessor();
+				boolean first = true;
 				if (accessor instanceof ListableContextAccessor) {
-					boolean first = true;
 					List<String> list = new ArrayList<String>((Collection<String>) ((ListableContextAccessor) accessor).list(event));
 					// alphabetical predictability
 					Collections.sort(list);
@@ -216,6 +220,20 @@ public class CEPUtils {
 								target.append(" ");
 							}
 							appendExtension(target, key, value);
+						}
+					}
+				}
+				if (event instanceof ComplexEvent) {
+					Map<String, Object> extensions = ((ComplexEvent) event).getExtensions();
+					if (extensions != null) {
+						for (String key : extensions.keySet()) {
+							if (first) {
+								first = false;
+							}
+							else {
+								target.append(" ");
+							}
+							appendExtension(target, key, extensions.get(key));
 						}
 					}
 				}
@@ -371,11 +389,11 @@ public class CEPUtils {
 	private static String escapeField(String value) {
 		return value.replace("\\", "\\\\")
 			.replace("|", "\\|")
-			.replaceAll("[\r\n]+", "\n");
+			.replaceAll("[\r\n]+", "\\\\n");
 	}
 	private static String escapeExtension(String value) {
 		return value.replace("\\", "\\\\")
 			.replace("=", "\\=")
-			.replaceAll("[\r\n]+", "\n");
+			.replaceAll("[\r\n]+", "\\\\n");
 	}
 }
