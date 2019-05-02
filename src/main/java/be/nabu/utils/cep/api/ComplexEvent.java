@@ -1,6 +1,7 @@
 package be.nabu.utils.cep.api;
 
 import java.util.Date;
+import java.util.TimeZone;
 
 public interface ComplexEvent {
 	// server settings
@@ -18,7 +19,7 @@ public interface ComplexEvent {
 	// how many times was this same event observed
 	public Integer getEventCount();
 	// the severity
-	public Severity getSeverity();
+	public EventSeverity getSeverity();
 	
 	// user information
 	public String getRealm();
@@ -31,6 +32,16 @@ public interface ComplexEvent {
 	public Date getStopped();
 	public Long getDuration();
 	
+	// the timezone for this event
+	public TimeZone getTimezone();
+	
 	// longer message
 	public String getMessage();
+	
+	// a structural code for this event (e.g. error code)
+	public String getCode();
+	// a stack trace in case this event involves an exception
+	public String getStacktrace();
+	// a free-to-use context that you can use to explain the circumstances of the event
+	public String getContext();
 }

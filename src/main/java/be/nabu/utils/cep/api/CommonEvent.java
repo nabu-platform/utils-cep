@@ -21,7 +21,7 @@ public interface CommonEvent {
 	// a human readable description of the event (no variables, do those in extensions)
 	public String getName();
 	
-	public Severity getSeverity();
+	public EventSeverity getSeverity();
 	
 	public Map<String, Object> getExtensions();
 	

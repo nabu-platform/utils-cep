@@ -7,12 +7,19 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
+import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -20,19 +27,94 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import be.nabu.libs.converter.ConverterFactory;
-import be.nabu.libs.evaluator.ContextAccessorFactory;
 import be.nabu.libs.evaluator.api.AnnotatedContextAccessor;
 import be.nabu.libs.evaluator.api.ContextAccessor;
 import be.nabu.libs.evaluator.api.ListableContextAccessor;
+import be.nabu.libs.evaluator.impl.JavaContextAccessor;
+import be.nabu.utils.cep.api.CEPField;
+import be.nabu.utils.cep.api.CEPIdentifiable;
+import be.nabu.utils.cep.api.CEPIgnore;
 import be.nabu.utils.cep.api.CommonEvent;
 import be.nabu.utils.cep.api.CommonEventExtension;
 import be.nabu.utils.cep.api.ComplexEvent;
-import be.nabu.utils.cep.api.Severity;
+import be.nabu.utils.cep.api.EventSeverity;
 
-public class CEFUtils {
+public class CEPUtils {
+	
+	public static NetworkedComplexEventImpl newServerNetworkEvent(Class<?> context, String name, SocketAddress address) {
+		return newServerNetworkEvent(context, name, address, null, null);
+	}
+	
+	public static NetworkedComplexEventImpl newServerNetworkEvent(Class<?> context, String name, SocketAddress address, String message, Exception e) {
+		NetworkedComplexEventImpl event = new NetworkedComplexEventImpl();
+		// it's an assumption that holds true in most cases
+		event.setTransportProtocol("tcp");
+		event.setCreated(new Date());
+		event.setMessage(message);
+		event.setEventName(name);
+		event.setContext(context.getName());
+		event.setLocalId(context.getName() + ":" + name);
+		try {
+			InetAddress localHost = InetAddress.getLocalHost();
+			event.setDestinationHost(localHost.getHostName());
+			event.setDestinationIp(localHost.getHostAddress());
+			// same host for server events
+			event.setServerHost(event.getDestinationHost());
+		}
+		catch (UnknownHostException ue) {
+			// ignore
+		}
+		if (e != null) {
+			event.setSeverity(EventSeverity.ERROR);
+			CEPUtils.enrich(event, e);
+		}
+		else {
+			event.setSeverity(EventSeverity.INFO);
+		}
+		if (address instanceof InetSocketAddress) {
+			InetSocketAddress socketAddress = (InetSocketAddress) address;
+			if (socketAddress.getAddress() instanceof Inet6Address) {
+				event.setNetworkProtocol("ipv6");
+			}
+			else {
+				event.setNetworkProtocol("ipv4");
+			}
+			event.setSourceHost(socketAddress.getHostName());
+			event.setSourceIp(socketAddress.getAddress().getHostAddress());
+			event.setSourcePort(socketAddress.getPort());
+		}
+		return event;
+	}
+	
+	public static ComplexEventImpl enrich(ComplexEventImpl event, Exception e) {
+		StringWriter stringWriter = new StringWriter();
+		PrintWriter printer = new PrintWriter(stringWriter);
+		e.printStackTrace(printer);
+		printer.flush();
+		event.setStacktrace(stringWriter.toString());
+		event.setSeverity(EventSeverity.ERROR);
+		return event;
+	}
+	
+	private static String hash(String content) {
+		try {
+			MessageDigest digest = MessageDigest.getInstance("MD5");
+			digest.update((byte[]) content.getBytes("UTF-8"));
+			byte [] hash = digest.digest();
+			StringBuilder string = new StringBuilder();
+			for (int i = 0; i < hash.length; i++) {
+				string.append(Integer.toHexString((hash[i] & 0xFF) | 0x100).substring(1,3));
+			}
+			return string.toString();
+		}
+		catch (Exception e) {
+			e.printStackTrace(System.err);
+			return "failed-hash";
+		}
+	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static void formatAsCEF(Appendable target, String deviceVendor, String deviceProduct, String deviceVersion, Iterable<Object> events) {
+	public static void asCEF(Appendable target, String deviceVendor, String deviceProduct, String deviceVersion, boolean hashIdentifiable, Iterable<Object> events) {
 		boolean firstEvent = true;
 		for (Object event : events) {
 			try {
@@ -88,34 +170,45 @@ public class CEFUtils {
 				target.append("|");
 				
 				// the severity
-				Severity severity = null;
+				EventSeverity severity = null;
 				if (event instanceof ComplexEvent) {
 					severity = ((ComplexEvent) event).getSeverity();
 				}
-				if (severity == null) {
-					severity = Severity.MEDIUM;
-				}
 				
-				target.append(Integer.toString(severity.getTo()));
+				target.append(Integer.toString(severity == null ? 5 : severity.getLevel()));
 				target.append("|");
 				
-				ContextAccessor accessor = ContextAccessorFactory.getInstance().getAccessor(event.getClass());
+				// TODO: use the factory, however it defaults to the JavaBeanAccessor which (currently) does not support listing & annotations
+				ContextAccessor accessor = new JavaContextAccessor();
 				if (accessor instanceof ListableContextAccessor) {
 					boolean first = true;
-					for (String field : (Collection<String>) ((ListableContextAccessor) accessor).list(event)) {
+					List<String> list = new ArrayList<String>((Collection<String>) ((ListableContextAccessor) accessor).list(event));
+					// alphabetical predictability
+					Collections.sort(list);
+					for (String field : list) {
 						String key = field;
-						if (accessor instanceof AnnotatedContextAccessor) {
-							Map annotation = ((AnnotatedContextAccessor) accessor).getAnnotation(event, field, "CEFIgnore");
-							if (annotation != null) {
-								continue;
-							}
-							annotation = ((AnnotatedContextAccessor) accessor).getAnnotation(event, field, "CEFField");
-							if (annotation.get("key") != null) {
-								key = annotation.get("key").toString();
-							}
-						}
 						Object value = accessor.get(event, field);
 						if (value != null) {
+							if (accessor instanceof AnnotatedContextAccessor) {
+								Map annotation = ((AnnotatedContextAccessor) accessor).getAnnotation(event, field, CEPIgnore.class.getSimpleName());
+								if (annotation != null) {
+									continue;
+								}
+								annotation = ((AnnotatedContextAccessor) accessor).getAnnotation(event, field, CEPField.class.getSimpleName());
+								if (annotation != null && annotation.get("key") != null) {
+									key = annotation.get("key").toString();
+								}
+								if (hashIdentifiable) {
+									annotation = ((AnnotatedContextAccessor) accessor).getAnnotation(event, field, CEPIdentifiable.class.getSimpleName());
+									if (annotation != null) {
+										if (!(value instanceof String)) {
+											value = ConverterFactory.getInstance().getConverter().convert(value, String.class);
+										}
+										value = hash((String) value);
+									}
+								}
+							}
+						
 							if (first) {
 								first = false;
 							}
@@ -222,7 +315,7 @@ public class CEFUtils {
 				buffered.append("|");
 				buffered.append(escapeField(event.getName()));
 				buffered.append("|");
-				buffered.append(Integer.toString(event.getSeverity() == null ? Severity.MEDIUM.getTo() : event.getSeverity().getTo()));
+				buffered.append(Integer.toString(event.getSeverity() == null ? EventSeverity.INFO.getLevel() : event.getSeverity().getLevel()));
 				buffered.append("|");
 				boolean first = true;
 				if (event.getExtensions() == null || !event.getExtensions().containsKey(CommonEventExtension.TIMEZONE.getName())) {

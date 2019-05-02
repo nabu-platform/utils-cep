@@ -7,7 +7,9 @@ public interface NetworkedComplexEvent extends ComplexEvent {
 	public String getDestinationHost();
 	public String getDestinationIp();
 	public Integer getDestinationPort();
-	public String getProtocol();
+	public String getApplicationProtocol();
+	public String getTransportProtocol();
+	public String getNetworkProtocol();
 	public Long getSizeIn();
 	public Long getSizeOut();
 }

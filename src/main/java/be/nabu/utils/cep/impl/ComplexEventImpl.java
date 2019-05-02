@@ -1,20 +1,24 @@
 package be.nabu.utils.cep.impl;
 
 import java.util.Date;
+import java.util.TimeZone;
 
-import be.nabu.utils.cep.api.CEFField;
-import be.nabu.utils.cep.api.CEFIgnore;
+import be.nabu.utils.cep.api.CEPField;
+import be.nabu.utils.cep.api.CEPIdentifiable;
+import be.nabu.utils.cep.api.CEPIgnore;
 import be.nabu.utils.cep.api.ComplexEvent;
-import be.nabu.utils.cep.api.Severity;
+import be.nabu.utils.cep.api.EventSeverity;
 
 public class ComplexEventImpl implements ComplexEvent {
 	private String artifactId, localId, eventName, realm, alias, message, serverGroup, serverName, serverHost;
 	private Date created, started, stopped;
 	private Long duration;
 	private Integer eventCount;
-	private Severity severity;
+	private EventSeverity severity;
+	private String code, stacktrace, context;
+	private TimeZone timezone;
 
-	@CEFIgnore
+	@CEPField(key = "artifact")
 	@Override
 	public String getArtifactId() {
 		return artifactId;
@@ -23,7 +27,7 @@ public class ComplexEventImpl implements ComplexEvent {
 		this.artifactId = artifactId;
 	}
 	
-	@CEFIgnore
+	@CEPIgnore
 	@Override
 	public String getLocalId() {
 		return localId;
@@ -32,7 +36,7 @@ public class ComplexEventImpl implements ComplexEvent {
 		this.localId = localId;
 	}
 	
-	@CEFIgnore
+	@CEPIgnore
 	@Override
 	public String getEventName() {
 		return eventName;
@@ -41,7 +45,7 @@ public class ComplexEventImpl implements ComplexEvent {
 		this.eventName = eventName;
 	}
 	
-	@CEFField(key = "srealm")
+	@CEPField(key = "srealm")
 	@Override
 	public String getRealm() {
 		return realm;
@@ -50,7 +54,8 @@ public class ComplexEventImpl implements ComplexEvent {
 		this.realm = realm;
 	}
 	
-	@CEFField(key = "suser")
+	@CEPIdentifiable
+	@CEPField(key = "suser")
 	@Override
 	public String getAlias() {
 		return alias;
@@ -59,7 +64,7 @@ public class ComplexEventImpl implements ComplexEvent {
 		this.alias = alias;
 	}
 	
-	@CEFField(key = "msg")
+	@CEPField(key = "msg")
 	@Override
 	public String getMessage() {
 		return message;
@@ -68,7 +73,7 @@ public class ComplexEventImpl implements ComplexEvent {
 		this.message = message;
 	}
 	
-	@CEFField(key = "rt")
+	@CEPField(key = "rt")
 	@Override
 	public Date getCreated() {
 		return created;
@@ -77,7 +82,7 @@ public class ComplexEventImpl implements ComplexEvent {
 		this.created = created;
 	}
 	
-	@CEFField(key = "start")
+	@CEPField(key = "start")
 	@Override
 	public Date getStarted() {
 		return started;
@@ -86,7 +91,7 @@ public class ComplexEventImpl implements ComplexEvent {
 		this.started = started;
 	}
 	
-	@CEFField(key = "end")
+	@CEPField(key = "end")
 	@Override
 	public Date getStopped() {
 		return stopped;
@@ -95,7 +100,7 @@ public class ComplexEventImpl implements ComplexEvent {
 		this.stopped = stopped;
 	}
 	
-	@CEFField(key = "dur")
+	@CEPField(key = "dur")
 	@Override
 	public Long getDuration() {
 		return duration;
@@ -104,7 +109,7 @@ public class ComplexEventImpl implements ComplexEvent {
 		this.duration = duration;
 	}
 	
-	@CEFField(key = "cnt")
+	@CEPField(key = "cnt")
 	@Override
 	public Integer getEventCount() {
 		return eventCount;
@@ -113,16 +118,16 @@ public class ComplexEventImpl implements ComplexEvent {
 		this.eventCount = eventCount;
 	}
 	
-	@CEFIgnore
+	@CEPIgnore
 	@Override
-	public Severity getSeverity() {
+	public EventSeverity getSeverity() {
 		return severity;
 	}
-	public void setSeverity(Severity severity) {
+	public void setSeverity(EventSeverity severity) {
 		this.severity = severity;
 	}
 	
-	@CEFField(key = "srvgrp")
+	@CEPField(key = "srvgrp")
 	@Override
 	public String getServerGroup() {
 		return serverGroup;
@@ -131,7 +136,7 @@ public class ComplexEventImpl implements ComplexEvent {
 		this.serverGroup = serverGroup;
 	}
 	
-	@CEFField(key = "srvnm")
+	@CEPField(key = "srvnm")
 	@Override
 	public String getServerName() {
 		return serverName;
@@ -140,7 +145,7 @@ public class ComplexEventImpl implements ComplexEvent {
 		this.serverName = serverName;
 	}
 
-	@CEFField(key = "srvhst")
+	@CEPField(key = "srvhst")
 	@Override
 	public String getServerHost() {
 		return serverHost;
@@ -148,4 +153,41 @@ public class ComplexEventImpl implements ComplexEvent {
 	public void setServerHost(String serverHost) {
 		this.serverHost = serverHost;
 	}
+	
+	@CEPField(key = "code")
+	@Override
+	public String getCode() {
+		return code;
+	}
+	public void setCode(String code) {
+		this.code = code;
+	}
+	
+	@CEPField(key = "stacktrace")
+	@Override
+	public String getStacktrace() {
+		return stacktrace;
+	}
+	public void setStacktrace(String stacktrace) {
+		this.stacktrace = stacktrace;
+	}
+	
+	@CEPField(key = "context")
+	@Override
+	public String getContext() {
+		return context;
+	}
+	public void setContext(String context) {
+		this.context = context;
+	}
+	
+	@CEPField(key = "dtz")
+	@Override
+	public TimeZone getTimezone() {
+		return timezone;
+	}
+	public void setTimezone(TimeZone timezone) {
+		this.timezone = timezone;
+	}
+	
 }

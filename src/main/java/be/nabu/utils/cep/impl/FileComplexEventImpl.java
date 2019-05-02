@@ -2,14 +2,14 @@ package be.nabu.utils.cep.impl;
 
 import java.net.URI;
 
-import be.nabu.utils.cep.api.CEFField;
+import be.nabu.utils.cep.api.CEPField;
 import be.nabu.utils.cep.api.FileComplexEvent;
 
 public class FileComplexEventImpl extends NetworkedComplexEventImpl implements FileComplexEvent {
 	private URI fileUri;
 	private Long fileSize;
 	
-	@CEFField(key = "fname")
+	@CEPField(key = "fname")
 	@Override
 	public URI getFileUri() {
 		return fileUri;
@@ -18,7 +18,7 @@ public class FileComplexEventImpl extends NetworkedComplexEventImpl implements F
 		this.fileUri = fileUri;
 	}
 	
-	@CEFField(key = "fsize")
+	@CEPField(key = "fsize")
 	@Override
 	public Long getFileSize() {
 		return fileSize;

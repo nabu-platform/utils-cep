@@ -1,14 +1,16 @@
 package be.nabu.utils.cep.impl;
 
-import be.nabu.utils.cep.api.CEFField;
+import be.nabu.utils.cep.api.CEPField;
+import be.nabu.utils.cep.api.CEPIdentifiable;
 import be.nabu.utils.cep.api.NetworkedComplexEvent;
 
 public class NetworkedComplexEventImpl extends ComplexEventImpl implements NetworkedComplexEvent {
-	private String sourceHost, sourceIp, destinationHost, destinationIp, protocol;
+	private String sourceHost, sourceIp, destinationHost, destinationIp, applicationProtocol, networkProtocol, transportProtocol;
 	private Integer sourcePort, destinationPort;
 	private Long sizeIn, sizeOut;
 	
-	@CEFField(key = "shost")
+	@CEPIdentifiable
+	@CEPField(key = "shost")
 	@Override
 	public String getSourceHost() {
 		return sourceHost;
@@ -17,7 +19,8 @@ public class NetworkedComplexEventImpl extends ComplexEventImpl implements Netwo
 		this.sourceHost = sourceHost;
 	}
 	
-	@CEFField(key = "src")
+	@CEPIdentifiable
+	@CEPField(key = "src")
 	@Override
 	public String getSourceIp() {
 		return sourceIp;
@@ -26,7 +29,7 @@ public class NetworkedComplexEventImpl extends ComplexEventImpl implements Netwo
 		this.sourceIp = sourceIp;
 	}
 	
-	@CEFField(key = "dhost")
+	@CEPField(key = "dhost")
 	@Override
 	public String getDestinationHost() {
 		return destinationHost;
@@ -35,7 +38,7 @@ public class NetworkedComplexEventImpl extends ComplexEventImpl implements Netwo
 		this.destinationHost = destinationHost;
 	}
 	
-	@CEFField(key = "dst")
+	@CEPField(key = "dst")
 	@Override
 	public String getDestinationIp() {
 		return destinationIp;
@@ -44,16 +47,33 @@ public class NetworkedComplexEventImpl extends ComplexEventImpl implements Netwo
 		this.destinationIp = destinationIp;
 	}
 	
-	@CEFField(key = "proto")
-	@Override
-	public String getProtocol() {
-		return protocol;
+	@CEPField(key = "proto")
+	@Override	
+	public String getApplicationProtocol() {
+		return applicationProtocol;
 	}
-	public void setProtocol(String protocol) {
-		this.protocol = protocol;
+	public void setApplicationProtocol(String applicationProtocol) {
+		this.applicationProtocol = applicationProtocol;
 	}
 	
-	@CEFField(key = "spt")
+	@CEPField(key = "network")
+	@Override
+	public String getNetworkProtocol() {
+		return networkProtocol;
+	}
+	public void setNetworkProtocol(String networkProtocol) {
+		this.networkProtocol = networkProtocol;
+	}
+	
+	@CEPField(key = "transport")
+	@Override
+	public String getTransportProtocol() {
+		return transportProtocol;
+	}
+	public void setTransportProtocol(String transportProtocol) {
+		this.transportProtocol = transportProtocol;
+	}
+	@CEPField(key = "spt")
 	@Override
 	public Integer getSourcePort() {
 		return sourcePort;
@@ -62,7 +82,7 @@ public class NetworkedComplexEventImpl extends ComplexEventImpl implements Netwo
 		this.sourcePort = sourcePort;
 	}
 	
-	@CEFField(key = "dpt")
+	@CEPField(key = "dpt")
 	@Override
 	public Integer getDestinationPort() {
 		return destinationPort;
@@ -71,7 +91,7 @@ public class NetworkedComplexEventImpl extends ComplexEventImpl implements Netwo
 		this.destinationPort = destinationPort;
 	}
 
-	@CEFField(key = "in")
+	@CEPField(key = "in")
 	@Override
 	public Long getSizeIn() {
 		return sizeIn;
@@ -80,7 +100,7 @@ public class NetworkedComplexEventImpl extends ComplexEventImpl implements Netwo
 		this.sizeIn = sizeIn;
 	}
 	
-	@CEFField(key = "out")
+	@CEPField(key = "out")
 	@Override
 	public Long getSizeOut() {
 		return sizeOut;
