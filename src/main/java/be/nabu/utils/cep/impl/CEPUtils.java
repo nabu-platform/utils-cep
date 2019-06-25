@@ -233,7 +233,9 @@ public class CEPUtils {
 							else {
 								target.append(" ");
 							}
-							appendExtension(target, key, extensions.get(key));
+							if (extensions.get(key) != null) {
+								appendExtension(target, key, extensions.get(key));
+							}
 						}
 					}
 				}
@@ -382,7 +384,8 @@ public class CEPUtils {
 	
 	private static void appendExtension(Appendable writer, String key, Object value) throws IOException {
 		if (!(value instanceof String)) {
-			value = ConverterFactory.getInstance().getConverter().convert(value, String.class);
+			String converted = ConverterFactory.getInstance().getConverter().convert(value, String.class);
+			value = converted == null ? value.toString() : converted;
 		}
 		writer.append(escapeExtension(key)).append("=").append(escapeExtension((String) value));
 	}
