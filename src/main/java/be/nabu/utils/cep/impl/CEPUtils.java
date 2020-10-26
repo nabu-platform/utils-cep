@@ -246,7 +246,7 @@ public class CEPUtils {
 		}
 	}
 	
-	protected static Iterable<CommonEvent> parse(InputStream input) {
+	public static List<CommonEvent> parse(InputStream input) {
 		SimpleDateFormat formatter = new SimpleDateFormat("MMM dd HH:mm:ss", Locale.US);
 		
 		List<CommonEvent> events = new ArrayList<CommonEvent>();

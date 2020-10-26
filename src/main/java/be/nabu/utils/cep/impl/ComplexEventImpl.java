@@ -1,7 +1,6 @@
 package be.nabu.utils.cep.impl;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -12,14 +11,15 @@ import be.nabu.utils.cep.api.ComplexEvent;
 import be.nabu.utils.cep.api.EventSeverity;
 
 public class ComplexEventImpl implements ComplexEvent {
-	private String artifactId, localId, eventName, realm, alias, message, serverGroup, serverName, serverHost, action, eventCategory, externalId, reason, correlationId, deviceId;
+	private String artifactId, localId, eventName, realm, alias, message, serverGroup, serverName, serverHost, action, eventCategory, externalId, reason, correlationId, deviceId, externalDependency;
 	private Date created, started, stopped;
 	private Long duration;
 	private Integer eventCount;
 	private EventSeverity severity;
 	private String code, stacktrace, context;
 	private TimeZone timezone;
-	private Map<String, Object> extensions = new HashMap<String, Object>();
+	private String origin;
+	private Map<String, Object> extensions; // = new HashMap<String, Object>()
 
 	@CEPField(key = "artifact")
 	@Override
@@ -255,6 +255,22 @@ public class ComplexEventImpl implements ComplexEvent {
 	}
 	public void setExtensions(Map<String, Object> extensions) {
 		this.extensions = extensions;
+	}
+	
+	@CEPField(key = "origin")
+	public String getOrigin() {
+		return origin;
+	}
+	public void setOrigin(String origin) {
+		this.origin = origin;
+	}
+	
+	@CEPField(key = "externalDependency")
+	public String getExternalDependency() {
+		return externalDependency;
+	}
+	public void setExternalDependency(String externalDependency) {
+		this.externalDependency = externalDependency;
 	}
 
 }
