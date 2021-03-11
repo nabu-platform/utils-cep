@@ -16,10 +16,11 @@ public class ComplexEventImpl implements ComplexEvent {
 	private Long duration;
 	private Integer eventCount;
 	private EventSeverity severity;
-	private String code, stacktrace, context;
+	private String code, stacktrace, context, sessionId;
 	private TimeZone timezone;
 	private String origin;
 	private Map<String, Object> extensions; // = new HashMap<String, Object>()
+	private Double sourceLongitude, sourceLatitude, destinationLongitude, destinationLatitude;
 
 	@CEPField(key = "artifact")
 	@Override
@@ -272,5 +273,43 @@ public class ComplexEventImpl implements ComplexEvent {
 	public void setExternalDependency(String externalDependency) {
 		this.externalDependency = externalDependency;
 	}
-
+	
+	@CEPField(key = "slong")
+	public Double getSourceLongitude() {
+		return sourceLongitude;
+	}
+	public void setSourceLongitude(Double sourceLongitude) {
+		this.sourceLongitude = sourceLongitude;
+	}
+	
+	@CEPField(key = "slat")
+	public Double getSourceLatitude() {
+		return sourceLatitude;
+	}
+	public void setSourceLatitude(Double sourceLatitude) {
+		this.sourceLatitude = sourceLatitude;
+	}
+	
+	@CEPField(key = "dlong")
+	public Double getDestinationLongitude() {
+		return destinationLongitude;
+	}
+	public void setDestinationLongitude(Double destinationLongitude) {
+		this.destinationLongitude = destinationLongitude;
+	}
+	
+	@CEPField(key = "dlat")
+	public Double getDestinationLatitude() {
+		return destinationLatitude;
+	}
+	public void setDestinationLatitude(Double destinationLatitude) {
+		this.destinationLatitude = destinationLatitude;
+	}
+	
+	public String getSessionId() {
+		return sessionId;
+	}
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
+	}
 }

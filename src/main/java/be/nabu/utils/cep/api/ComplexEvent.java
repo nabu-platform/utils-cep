@@ -60,4 +60,12 @@ public interface ComplexEvent {
 	public String getDeviceId();
 	// any additional extensions
 	public Map<String, Object> getExtensions();
+	
+	public Double getSourceLongitude();
+	public Double getSourceLatitude();
+	
+	public Double getDestinationLongitude();
+	public Double getDestinationLatitude();
+	
+	public String getSessionId();
 }
