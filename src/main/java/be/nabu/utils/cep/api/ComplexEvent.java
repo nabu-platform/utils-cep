@@ -54,6 +54,8 @@ public interface ComplexEvent {
 	public String getExternalId();
 	// the reason this event was generated
 	public String getReason();
+	// any structured data for this event
+	public String getData();
 	// if the event is correlated to something
 	public String getCorrelationId();
 	// the device that triggered it

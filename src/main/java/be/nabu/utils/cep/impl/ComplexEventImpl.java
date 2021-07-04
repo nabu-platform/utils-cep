@@ -11,7 +11,7 @@ import be.nabu.utils.cep.api.ComplexEvent;
 import be.nabu.utils.cep.api.EventSeverity;
 
 public class ComplexEventImpl implements ComplexEvent {
-	private String artifactId, localId, eventName, realm, alias, message, serverGroup, serverName, serverHost, action, eventCategory, externalId, reason, correlationId, deviceId, externalDependency;
+	private String artifactId, localId, eventName, realm, alias, message, serverGroup, serverName, serverHost, action, eventCategory, externalId, reason, correlationId, deviceId, externalDependency, data;
 	private Date created, started, stopped;
 	private Long duration;
 	private Integer eventCount;
@@ -312,4 +312,13 @@ public class ComplexEventImpl implements ComplexEvent {
 	public void setSessionId(String sessionId) {
 		this.sessionId = sessionId;
 	}
+	
+	@CEPIgnore
+	public String getData() {
+		return data;
+	}
+	public void setData(String data) {
+		this.data = data;
+	}
+	
 }
