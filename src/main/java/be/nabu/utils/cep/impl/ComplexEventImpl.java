@@ -313,7 +313,7 @@ public class ComplexEventImpl implements ComplexEvent {
 		this.sessionId = sessionId;
 	}
 	
-	@CEPIgnore
+	@CEPIdentifiable
 	public String getData() {
 		return data;
 	}
