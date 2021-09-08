@@ -27,6 +27,7 @@ public interface ComplexEvent {
 	// user information
 	public String getRealm();
 	public String getAlias();
+	public String getAuthenticationId();
 	
 	public Date getCreated();
 	
