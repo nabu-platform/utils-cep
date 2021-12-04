@@ -58,7 +58,9 @@ public class CEPUtils {
 		event.setMessage(message);
 		event.setEventName(name);
 		event.setContext(context.getName());
-		event.setLocalId(context.getName() + ":" + name);
+		if (event.getLocalId() == null) {
+			event.setLocalId(context.getName() + ":" + name);
+		}
 		try {
 			InetAddress localHost = InetAddress.getLocalHost();
 			event.setDestinationHost(localHost.getHostName());
