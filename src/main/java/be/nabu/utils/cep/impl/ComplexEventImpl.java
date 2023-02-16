@@ -12,6 +12,7 @@ import be.nabu.utils.cep.api.EventSeverity;
 
 public class ComplexEventImpl implements ComplexEvent {
 	private String artifactId, localId, eventName, realm, alias, message, serverGroup, serverName, serverHost, action, eventCategory, externalId, reason, correlationId, deviceId, externalDependency, data, authenticationId;
+	private String impersonator, impersonatorId, impersonatorRealm;
 	private Date created, started, stopped;
 	private Long duration;
 	private Integer eventCount;
@@ -329,4 +330,33 @@ public class ComplexEventImpl implements ComplexEvent {
 		this.authenticationId = authenticationId;
 	}
 
+	@CEPField(key = "iuser")
+	@CEPIdentifiable
+	@Override
+	public String getImpersonator() {
+		return impersonator;
+	}
+	public void setImpersonator(String impersonator) {
+		this.impersonator = impersonator;
+	}
+
+	@CEPField(key = "iuid")
+	@Override
+	public String getImpersonatorId() {
+		return impersonatorId;
+	}
+	public void setImpersonatorId(String impersonatorId) {
+		this.impersonatorId = impersonatorId;
+	}
+	
+	@CEPField(key = "irealm")
+	@Override
+	public String getImpersonatorRealm() {
+		return impersonatorRealm;
+	}
+	public void setImpersonatorRealm(String impersonatorRealm) {
+		this.impersonatorRealm = impersonatorRealm;
+	}
+
+	
 }

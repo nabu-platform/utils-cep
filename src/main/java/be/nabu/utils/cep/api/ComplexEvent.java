@@ -29,6 +29,11 @@ public interface ComplexEvent {
 	public String getAlias();
 	public String getAuthenticationId();
 	
+	// impersonator information (if any)
+	public String getImpersonatorRealm();
+	public String getImpersonator();
+	public String getImpersonatorId();
+	
 	public Date getCreated();
 	
 	// only relevant if it takes time
