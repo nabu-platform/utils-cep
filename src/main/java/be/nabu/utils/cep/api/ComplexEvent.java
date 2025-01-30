@@ -81,6 +81,8 @@ public interface ComplexEvent {
 	public String getData();
 	// if the event is correlated to something
 	public String getCorrelationId();
+	// if the event is correlated to a larger conversation (usually cross system)
+	public String getConversationId();
 	// the device that triggered it
 	public String getDeviceId();
 	// any additional extensions
