@@ -95,4 +95,7 @@ public interface ComplexEvent {
 	public Double getDestinationLatitude();
 	
 	public String getSessionId();
+	
+	// what is the source of this exception? e.g. id of the throw
+	public String getSourceId();
 }

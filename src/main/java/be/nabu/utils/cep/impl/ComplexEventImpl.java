@@ -36,7 +36,7 @@ public class ComplexEventImpl implements ComplexEvent {
 	private EventSeverity severity;
 	private String code, stacktrace, context, sessionId;
 	private TimeZone timezone;
-	private String origin;
+	private String origin, sourceId;
 	private Map<String, Object> extensions; // = new HashMap<String, Object>()
 	private Double sourceLongitude, sourceLatitude, destinationLongitude, destinationLatitude;
 
@@ -383,6 +383,14 @@ public class ComplexEventImpl implements ComplexEvent {
 	public void setImpersonatorRealm(String impersonatorRealm) {
 		this.impersonatorRealm = impersonatorRealm;
 	}
-
+	
+	@CEPField(key = "spid")
+	@Override
+	public String getSourceId() {
+		return sourceId;
+	}
+	public void setSourceId(String sourceId) {
+		this.sourceId = sourceId;
+	}
 	
 }
