@@ -79,10 +79,12 @@ public interface ComplexEvent {
 	public String getReason();
 	// any structured data for this event
 	public String getData();
-	// if the event is correlated to something
+	// if the event is correlated to something, usually meant to be in the same execution unit (thread)
 	public String getCorrelationId();
-	// if the event is correlated to a larger conversation (usually cross system)
+	// if the event is correlated to a larger conversation (usually cross system) but still part of a single larger action
 	public String getConversationId();
+	// the event is correlated to a larger narrative, usually a business process
+	public String getNarrativeId();
 	// the device that triggered it
 	public String getDeviceId();
 	// any additional extensions
