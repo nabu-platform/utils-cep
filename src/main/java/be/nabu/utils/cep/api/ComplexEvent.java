@@ -100,4 +100,9 @@ public interface ComplexEvent {
 	
 	// what is the source of this exception? e.g. id of the throw
 	public String getSourceId();
+	
+	public Date getImageDate();
+	public String getImageName();
+	public String getImageVersion();
+	public String getImageEnvironment();
 }

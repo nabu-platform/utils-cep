@@ -30,7 +30,7 @@ import be.nabu.utils.cep.api.EventSeverity;
 public class ComplexEventImpl implements ComplexEvent {
 	private String artifactId, localId, eventName, realm, alias, message, serverGroup, serverName, serverHost, action, eventCategory, externalId, reason, correlationId, deviceId, externalDependency, data, authenticationId, conversationId, narrativeId;
 	private String impersonator, impersonatorId, impersonatorRealm;
-	private Date created, started, stopped;
+	private Date created, started, stopped, imageDate;
 	private Long duration;
 	private Integer eventCount;
 	private EventSeverity severity;
@@ -39,6 +39,7 @@ public class ComplexEventImpl implements ComplexEvent {
 	private String origin, sourceId;
 	private Map<String, Object> extensions; // = new HashMap<String, Object>()
 	private Double sourceLongitude, sourceLatitude, destinationLongitude, destinationLatitude;
+	private String imageName, imageVersion, imageEnvironment;
 
 	@CEPField(key = "artifact")
 	@Override
@@ -400,6 +401,39 @@ public class ComplexEventImpl implements ComplexEvent {
 	}
 	public void setSourceId(String sourceId) {
 		this.sourceId = sourceId;
+	}
+	
+	@Override
+	@CEPField(key = "imgdate")
+	public Date getImageDate() {
+		return imageDate;
+	}
+	public void setImageDate(Date imageDate) {
+		this.imageDate = imageDate;
+	}
+	@Override
+	@CEPField(key = "imgname")
+	public String getImageName() {
+		return imageName;
+	}
+	public void setImageName(String imageName) {
+		this.imageName = imageName;
+	}
+	@Override
+	@CEPField(key = "imgversion")
+	public String getImageVersion() {
+		return imageVersion;
+	}
+	public void setImageVersion(String imageVersion) {
+		this.imageVersion = imageVersion;
+	}
+	@Override
+	@CEPField(key = "imgenv")
+	public String getImageEnvironment() {
+		return imageEnvironment;
+	}
+	public void setImageEnvironment(String imageEnvironment) {
+		this.imageEnvironment = imageEnvironment;
 	}
 	
 }
